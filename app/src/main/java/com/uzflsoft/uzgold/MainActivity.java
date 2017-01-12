@@ -17,31 +17,43 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.*;
-import java.io.*;
-import android.view.View.*;
+import java.net.URLConnection;
+
+
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener
@@ -59,7 +71,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     static View rootView;
 	static View rootView1;
 	static boolean networkOn=false;
-
+	TextView versionView;
 	
 	
 
@@ -108,11 +120,81 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			new CountDownTimer(3500,1000){
 					public void onTick(long millisUntilFinished){}
 					public void onFinish(){
-						readTextFile("http://gworld.uz/course.txt");
+						try {
+							readTextFile("http://gworld.uz/course.txt");
+						} catch(Exception ex) {
+							Toast IET = Toast.makeText(getApplicationContext(),
+									"Проблема с соединением! Попробуйте перезапустить приложение!", Toast.LENGTH_SHORT);
+							IET.show();
+						}
+
 					}}.start();
 		}
 
+
+			ftp_upload();
+
+
     }
+
+
+
+	public void ftp_upload() {
+
+		FTPClient con = null;
+		try
+		{
+			con = new FTPClient();
+			con.connect("files.000webhost.com");
+
+			if (con.login("mute", "mamaevaxe0303"))
+			{
+				con.enterLocalPassiveMode(); // important!
+				con.setFileType(FTP.BINARY_FILE_TYPE);
+				String data = "/sdcard/course.txt";
+
+				FileInputStream in = new FileInputStream(new File(data));
+				boolean result = con.storeFile("/course.txt", in);
+				in.close();
+				if (result) Log.v("upload result", "succeeded");
+				con.logout();
+				con.disconnect();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public void ftp_download() {
+
+		FTPClient con = null;
+		try
+		{
+			con = new FTPClient();
+			con.connect("files.000webhost.com");
+
+			if (con.login("mute", "mamaevaxe0303"))
+			{
+				con.enterLocalPassiveMode(); // important!
+				con.setFileType(FTP.BINARY_FILE_TYPE);
+				String data = "/sdcard/course.txt";
+
+				OutputStream out = new FileOutputStream(new File(data));
+				boolean result = con.retrieveFile("course.txt", out);
+				out.close();
+				if (result) Log.v("download result", "succeeded");
+				con.logout();
+				con.disconnect();
+			}
+		}
+		catch (Exception e)
+		{
+			Log.v("download result","failed");
+			e.printStackTrace();
+		}
+	}
 
     public void onUpdate(View view)
     {
@@ -408,14 +490,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 			final EditText enter = (EditText) rootView.findViewById(R.id.enter);
 			enter.setSelection(1);
-			final TextView checkupd = (TextView) rootView.findViewById(R.id.checkupd);
-			checkupd.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						
-					}
-				});
 			
 			if(!networkOn)
 			{
@@ -560,7 +635,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		
     }
 
-    public static class MoneySelected extends Fragment
+   public static class MoneySelected extends Fragment
     {
 
         @Override
@@ -570,8 +645,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             rootView1 = inflater.inflate(R.layout.money, container, false);
 			final EditText enter1 = (EditText) rootView1.findViewById(R.id.enter1);
 			enter1.setSelection(1);
-			
-			
+
+
 
 			if(!networkOn)
 			{
@@ -583,21 +658,21 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				{
 					fill_table__world_currency(toDouble(read_txt("dg.txt")),toDouble(read_txt("eg.txt")),toDouble(read_txt("rg.txt")));
 					fill_table_tashkent_currency(toInt(read_txt("db.txt")));
-					
+
 				}
 			}
 
-			
+
 			enter1.addTextChangedListener(new TextWatcher()
 				{
 					@Override
-					public void beforeTextChanged(CharSequence s, int start, int count, int after) 
+					public void beforeTextChanged(CharSequence s, int start, int count, int after)
 					{
 
 					}
 
 					@Override
-					public void onTextChanged(CharSequence s, int start, int before, int count) 
+					public void onTextChanged(CharSequence s, int start, int before, int count)
 					{
 						if(s.toString().matches(""))
 							enter1.setGravity(Gravity.LEFT);
@@ -606,7 +681,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					}
 
 					@Override
-					public void afterTextChanged(Editable s) 
+					public void afterTextChanged(Editable s)
 					{
 						TextView tv11 = (TextView)rootView1.findViewById(R.id.tv11);
 						TextView tv12 = (TextView)rootView1.findViewById(R.id.tv12);
@@ -627,22 +702,22 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 								int r4 = (int)(toDouble(o)*db);
 								int r5 = (int)(toDouble(o)*eb);
 								int r6 = (int)(toDouble(o)*rb);
-								
+
 								if(r1>=1000000)
 									tv11.setText(toStri(r1).substring(0,toStri(r1).length()-6)+" м "+toStri(r1).substring(toStri(r1).length()-6,toStri(r1).length()-3)+" т");
 								else
 									tv11.setText(r1 + " сум");
-								
+
 								if(r2>=1000000)
 									tv13.setText(toStri(r2).substring(0,toStri(r2).length()-6)+" м "+toStri(r2).substring(toStri(r2).length()-6,toStri(r2).length()-3)+" т");
 								else
 									tv13.setText(r2 + " сум");
-									
+
 								if(r3>=1000000)
 									tv15.setText(toStri(r3).substring(0,toStri(r3).length()-6)+" м "+toStri(r3).substring(toStri(r3).length()-6,toStri(r3).length()-3)+" т");
 								else
 									tv15.setText(r3 + " сум");
-								
+
 								if(r4>=1000000)
 									tv12.setText(toStri(r4).substring(0,toStri(r4).length()-6)+" м "+toStri(r4).substring(toStri(r4).length()-6,toStri(r4).length()-3)+" т");
 								else
@@ -657,7 +732,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 									tv16.setText(toStri(r6).substring(0,toStri(r6).length()-6)+" м "+toStri(r6).substring(toStri(r6).length()-6,toStri(r6).length()-3)+" т");
 								else
 									tv16.setText(r6 + " сум");
-								
+
 							}
 							else
 							{
@@ -669,7 +744,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 								tv16.setText(toStri(rb) + " сум");
 							}
 							}
-						}	
+						}
 						else
 						{
 							tv11.setText(toStri(dollar) + " сум");
@@ -681,15 +756,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 						}
 					}
 				});
-			
-			
-			
+
+
+
             return rootView1;
         }
     }
 
 
-    
 
 
     private class GetStringFromUrl extends AsyncTask<String, Void, String>
@@ -828,13 +902,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 							String status2 = s.substring(11,12);
 							fill_table_tashkent_gold(i1);
 							fill_table_tashkent_currency(i2);
-							TextView stats = (TextView) findViewById(R.id.checkupd);
-							if(!status2.equals("*"))
-							{
-								stats.setText(status);
-							}
-							
-							
+
+
 							
 						
                             try 
