@@ -242,7 +242,8 @@
                 android:text="обновить"
                 android:layout_marginTop="10dp"
                 android:textColor="#0069EB"
-                android:textSize="12dp"/>
+                android:textSize="12dp"
+                android:id="@+id/refresh_text" />
 
             <ImageButton
                 android:layout_height="wrap_content"

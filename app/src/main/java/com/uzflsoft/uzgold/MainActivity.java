@@ -34,12 +34,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -52,8 +52,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
-
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener
@@ -71,7 +69,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     static View rootView;
 	static View rootView1;
 	static boolean networkOn=false;
-	TextView versionView;
+
 	
 	
 
@@ -113,94 +111,37 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
         
 		
-		if(isNetworkAvailable())
-		{
+		if(isNetworkAvailable()) {
 			new GetStringFromUrl().execute("http://onlygold.com/m/Prices/AllTheGoldInTheWorld.asp");
 			new GetStringFromUrl().execute("http://www.cbu.uz/ru/otkrytye-dannye/");
 			new CountDownTimer(3500,1000){
 					public void onTick(long millisUntilFinished){}
 					public void onFinish(){
 						try {
-							readTextFile("http://gworld.uz/course.txt");
+							//readTextFile("http://gworld.uz/course.txt");
 						} catch(Exception ex) {
 							Toast IET = Toast.makeText(getApplicationContext(),
 									"Проблема с соединением! Попробуйте перезапустить приложение!", Toast.LENGTH_SHORT);
 							IET.show();
 						}
-
 					}}.start();
 		}
 
 
-			ftp_upload();
+		new DownloadFromFTP().execute();
 
 
-    }
-
-
-
-	public void ftp_upload() {
-
-		FTPClient con = null;
-		try
-		{
-			con = new FTPClient();
-			con.connect("files.000webhost.com");
-
-			if (con.login("mute", "mamaevaxe0303"))
-			{
-				con.enterLocalPassiveMode(); // important!
-				con.setFileType(FTP.BINARY_FILE_TYPE);
-				String data = "/sdcard/course.txt";
-
-				FileInputStream in = new FileInputStream(new File(data));
-				boolean result = con.storeFile("/course.txt", in);
-				in.close();
-				if (result) Log.v("upload result", "succeeded");
-				con.logout();
-				con.disconnect();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
-	public void ftp_download() {
 
-		FTPClient con = null;
-		try
-		{
-			con = new FTPClient();
-			con.connect("files.000webhost.com");
 
-			if (con.login("mute", "mamaevaxe0303"))
-			{
-				con.enterLocalPassiveMode(); // important!
-				con.setFileType(FTP.BINARY_FILE_TYPE);
-				String data = "/sdcard/course.txt";
 
-				OutputStream out = new FileOutputStream(new File(data));
-				boolean result = con.retrieveFile("course.txt", out);
-				out.close();
-				if (result) Log.v("download result", "succeeded");
-				con.logout();
-				con.disconnect();
-			}
-		}
-		catch (Exception e)
-		{
-			Log.v("download result","failed");
-			e.printStackTrace();
-		}
-	}
 
     public void onUpdate(View view)
     {
         new GetStringFromUrl().execute("http://onlygold.com/m/Prices/AllTheGoldInTheWorld.asp");
 		new GetStringFromUrl().execute("http://www.cbu.uz/ru/otkrytye-dannye/");
-		readTextFile("http://gworld.uz/course.txt");
+		//readTextFile("http://gworld.uz/course.txt");
     }
 
     @Override
@@ -421,7 +362,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		tv.setText(s);
 	}
 
-    private boolean isNetworkAvailable()
+    public boolean isNetworkAvailable()
     {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -429,6 +370,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		networkOn = activeNetworkInfo != null && activeNetworkInfo.isConnected();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+	public void getDeviceInfo() {
+		String info =  (android.os.Build.VERSION.SDK + "\n" + ///тут определяем версию андроид по сдк(пробиваем по списку)
+				android.os.Build.DEVICE   + "\n" + // тут модель полная нужно пробить по базе codenames написать отдельный класс -файл?
+				android.os.Build.MODEL     + "\n" +  // тут модель без компании
+				android.os.Build.PRODUCT ); // то же что и device только на конце версия прошивки
+
+
+
+	}
+
 	
 	public static void generateNoteOnSD(String FileName, String Body)
     {
@@ -478,6 +430,43 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		return output;
     }
 
+	public Boolean ftp_get_save(String server, int portNumber,
+										String user, String password, String filename, File localFile)
+			throws IOException {
+		FTPClient ftp = null;
+
+		try {
+			ftp = new FTPClient();
+			ftp.connect(server, portNumber);
+			Log.d("LOG:", "Connected. Reply: " + ftp.getReplyString());
+
+			ftp.login(user, password);
+			Log.d("LOG:", "Logged in");
+			ftp.setFileType(FTP.ASCII_FILE_TYPE);
+			Log.d("LOG:", "Downloading");
+			ftp.enterLocalPassiveMode();
+			//ftp.changeWorkingDirectory("txt");
+
+			OutputStream outputStream = null;
+			boolean success = false;
+			try {
+				outputStream = new BufferedOutputStream(new FileOutputStream(
+						localFile));
+				success = ftp.retrieveFile(filename, outputStream);
+			} finally {
+				if (outputStream != null) {
+					outputStream.close();
+				}
+			}
+
+			return success;
+		} finally {
+			if (ftp != null) {
+				ftp.logout();
+				ftp.disconnect();
+			}
+		}
+	}
 
     public static class GoldSelected extends Fragment {
 
@@ -491,7 +480,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			final EditText enter = (EditText) rootView.findViewById(R.id.enter);
 			enter.setSelection(1);
 
-			
+
+
+
 			if(!networkOn)
 			{
 
@@ -842,7 +833,20 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
-	
+	private class DownloadFromFTP extends AsyncTask<Void,Void,Void> {
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				ftp_get_save("files.000webhost.com", 21, "mute", "mamaevaxe0303", "course.txt", new File(Environment
+						.getExternalStorageDirectory(), "course.txt"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+
+
 	private static void downloadFile(String url, File outputFile) {
 		try {
 			URL u = new URL(url);
@@ -862,7 +866,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		} catch(FileNotFoundException e) {
 			return;
 		} catch (IOException e) {
-			return; 
+			return;
 		}
 	}
 	
