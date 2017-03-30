@@ -17,7 +17,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,15 +25,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -47,7 +43,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -127,14 +122,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					}}.start();
 		}
 
+		Database();
 
-		new DownloadFromFTP().execute();
 
 
 	}
 
 
+	public void Database() {
 
+	}
 
 
     public void onUpdate(View view)
@@ -371,14 +368,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-	public void getDeviceInfo() {
+	public String getDeviceInfo() {
 		String info =  (android.os.Build.VERSION.SDK + "\n" + ///тут определяем версию андроид по сдк(пробиваем по списку)
 				android.os.Build.DEVICE   + "\n" + // тут модель полная нужно пробить по базе codenames написать отдельный класс -файл?
 				android.os.Build.MODEL     + "\n" +  // тут модель без компании
 				android.os.Build.PRODUCT ); // то же что и device только на конце версия прошивки
-
-
-
+		return info;
 	}
 
 	
@@ -430,43 +425,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		return output;
     }
 
-	public Boolean ftp_get_save(String server, int portNumber,
-										String user, String password, String filename, File localFile)
-			throws IOException {
-		FTPClient ftp = null;
 
-		try {
-			ftp = new FTPClient();
-			ftp.connect(server, portNumber);
-			Log.d("LOG:", "Connected. Reply: " + ftp.getReplyString());
-
-			ftp.login(user, password);
-			Log.d("LOG:", "Logged in");
-			ftp.setFileType(FTP.ASCII_FILE_TYPE);
-			Log.d("LOG:", "Downloading");
-			ftp.enterLocalPassiveMode();
-			//ftp.changeWorkingDirectory("txt");
-
-			OutputStream outputStream = null;
-			boolean success = false;
-			try {
-				outputStream = new BufferedOutputStream(new FileOutputStream(
-						localFile));
-				success = ftp.retrieveFile(filename, outputStream);
-			} finally {
-				if (outputStream != null) {
-					outputStream.close();
-				}
-			}
-
-			return success;
-		} finally {
-			if (ftp != null) {
-				ftp.logout();
-				ftp.disconnect();
-			}
-		}
-	}
 
     public static class GoldSelected extends Fragment {
 
@@ -833,18 +792,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
-	private class DownloadFromFTP extends AsyncTask<Void,Void,Void> {
-		@Override
-		protected Void doInBackground(Void... params) {
-			try {
-				ftp_get_save("files.000webhost.com", 21, "mute", "mamaevaxe0303", "course.txt", new File(Environment
-						.getExternalStorageDirectory(), "course.txt"));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-	}
+
 
 
 	private static void downloadFile(String url, File outputFile) {
