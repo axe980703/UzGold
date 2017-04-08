@@ -1,15 +1,15 @@
 package com.uzflsoft.uzgold;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,47 +24,32 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener
 {
 
 
+    SQLiteHelper myDb;
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    static double gt583,gt750,gt999;
-    static double gw583,gw750,gw999;
-	static int db,rb,eb;
-	static int dollar,evro,rubble;
-	static double usd_eur=1;
-	static int usd_rub=1;
+    static double gt583, gt750, gt999;
+    static double gw583, gw750, gw999;
+	static int db, rb, eb;
+	static int dollar, evro, rubble;
+	static double usd_eur = 1;
+	static int usd_rub = 1 ;
     static View rootView;
 	static View rootView1;
-	static boolean networkOn=false;
-
+	static boolean networkOn = false;
 	
 	
 
@@ -73,6 +58,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myDb = new SQLiteHelper(this);
+        if(myDb.isTableEmpty())
+            myDb.insertDataDefault();
+
 
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
@@ -108,37 +98,40 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		
 		if(isNetworkAvailable()) {
 			new GetStringFromUrl().execute("http://onlygold.com/m/Prices/AllTheGoldInTheWorld.asp");
-			new GetStringFromUrl().execute("http://www.cbu.uz/ru/otkrytye-dannye/");
-			new CountDownTimer(3500,1000){
-					public void onTick(long millisUntilFinished){}
-					public void onFinish(){
-						try {
-							//readTextFile("http://gworld.uz/course.txt");
-						} catch(Exception ex) {
-							Toast IET = Toast.makeText(getApplicationContext(),
-									"Проблема с соединением! Попробуйте перезапустить приложение!", Toast.LENGTH_SHORT);
-							IET.show();
-						}
-					}}.start();
+			new GetStringFromUrl().execute("http://cbu.uz/ru/arkhiv-kursov-valyut/xml/");
+            new GetStringFromUrl().execute("https://mute.000webhostapp.com/get_data_json.php");
+            new GetStringFromUrl().execute("http://uzkurs.pro/");
 		}
 
-		Database();
+
+
 
 
 
 	}
 
 
-	public void Database() {
-
-	}
 
 
-    public void onUpdate(View view)
-    {
+    public void onUpdate(View view) {
         new GetStringFromUrl().execute("http://onlygold.com/m/Prices/AllTheGoldInTheWorld.asp");
-		new GetStringFromUrl().execute("http://www.cbu.uz/ru/otkrytye-dannye/");
-		//readTextFile("http://gworld.uz/course.txt");
+		new GetStringFromUrl().execute("http://cbu.uz/ru/arkhiv-kursov-valyut/xml/");
+        new GetStringFromUrl().execute("https://mute.000webhostapp.com/get_data_json.php");
+        new GetStringFromUrl().execute("http://uzkurs.pro/");
+
+        Cursor curs =  myDb.getData();
+        if(curs.getCount() == 0) Toast.makeText(this,"Error.Db is empty", Toast.LENGTH_SHORT);
+        StringBuffer buffer = new StringBuffer();
+        while(curs.moveToNext()) {
+            buffer.append("gold_course: " + curs.getString(0));
+            buffer.append("dollar_course: " + curs.getString(1));
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("message");
+        builder.setMessage(buffer.toString());
+        builder.show();
+
     }
 
     @Override
@@ -212,35 +205,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         return once/=31.1;
     }
 
-    public static String toStrd(double d)
-    {
-        String s = String.valueOf(d);
-        return s;
-    }
+    public static String toStrd(double d){return String.valueOf(d);}
 	
-	public static String toStri(int i)
-	{
-		String s = String.valueOf(i);
-		return s;
-	}
+	public static String toStri(int i){return String.valueOf(i);}
 
-    public static double toDouble(String s)
-    {
-        Double d = Double.valueOf(s);
-        return d;
-    }
+    public static double toDouble(String s){return Double.valueOf(s);}
 	
-	public static String toStrl(long l)
-	{
-		String s = String.valueOf(l);
-		return s;
-	}
+	public static String toStrl(long l){return String.valueOf(l);}
 
-    public static int toInt(String s)
-    {
-        Integer i = Integer.valueOf(s);
-        return i;
-    }
+    public static int toInt(String s){return Integer.valueOf(s);}
 	
 
 
@@ -254,7 +227,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         return (double) tmp / factor;
     }
 
-    public static void fill_table_world_gold(double price)
+    public void fill_table_world_gold(double price)
     {
 		
         TextView tv1 = (TextView) rootView.findViewById(R.id.tv1);
@@ -263,7 +236,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         TextView tvg1 = (TextView) rootView.findViewById(R.id.tvg1);
 		TextView tvg2 = (TextView) rootView.findViewById(R.id.tvg2);
 
-		generateNoteOnSD("gw.txt",toStrd(price));
+		//add to database world_gold
+
 
         gw999 = toGramm(price);
         gw750 = gw999*750/999;
@@ -281,19 +255,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		
     }
 
-	public static void fill_table__world_currency(double d, double e, double r)
+	public void fill_table__world_currency(double d, double e, double r)
 	{
 		TextView tv11 = (TextView) rootView1.findViewById(R.id.tv11);
 		TextView tv13 = (TextView) rootView1.findViewById(R.id.tv13);
 		TextView tv15 = (TextView) rootView1.findViewById(R.id.tv15);
 
-		generateNoteOnSD("dg.txt",toStrd(d));
-		generateNoteOnSD("eg.txt",toStrd(e));
-		generateNoteOnSD("rg.txt",toStrd(r));
-
 		dollar = (int) d;
 		evro = (int) e;
 		rubble = (int) r;
+
+        myDb.updateData(toStrd(gw999), toStri(dollar));
 
 		tv11.setText(toStrd(d).substring(0,toStrd(d).length()-2) + " сум");
 		tv13.setText(toStrd(e).substring(0,toStrd(e).length()-2) + " сум");
@@ -304,14 +276,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 	}
 	
-	public static void fill_table_tashkent_gold(int gold)
+	public void fill_table_tashkent_gold(int gold)
 	{
 		
 		TextView tv2 = (TextView) rootView.findViewById(R.id.tv2);
 		TextView tv4 = (TextView) rootView.findViewById(R.id.tv4);
 		TextView tv6 = (TextView) rootView.findViewById(R.id.tv6);
 
-		generateNoteOnSD("gt.txt",toStri(gold));
+		//add to database tash_gold
+        gold *= 1000;
 
 		gt583 = gold;
 		gt750 = (int) gt583*750/583;
@@ -329,13 +302,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		
 	}
 	
-	public static void fill_table_tashkent_currency(int currency)
+	public void fill_table_tashkent_currency(int currency)
 	{
 		TextView tv12 = (TextView) rootView1.findViewById(R.id.tv12);
         TextView tv14 = (TextView) rootView1.findViewById(R.id.tv14);
         TextView tv16 = (TextView) rootView1.findViewById(R.id.tv16);
 
-		generateNoteOnSD("db.txt",toStri(currency));
+		//add to database tash_cur
 
 		db = currency;
 		eb = (int) (db*usd_eur);
@@ -352,12 +325,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		
 	}
 
-	
-	public static void print(String s)
-	{
-		TextView tv = (TextView)rootView.findViewById(R.id.gold1);
-		tv.setText(s);
-	}
 
     public boolean isNetworkAvailable()
     {
@@ -376,54 +343,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		return info;
 	}
 
-	
-	public static void generateNoteOnSD(String FileName, String Body)
-    {
-        try
-        {
-            File root = new File(Environment.getExternalStorageDirectory(), "uzgold");
-            if (!root.exists()) 
-			{
-                root.mkdirs();
-            }
-            File gpxfile = new File(root, FileName);
-            FileWriter writer = new FileWriter(gpxfile);
-            writer.append(Body);
-            writer.flush();
-            writer.close();
 
-        }
-        catch(IOException e)
-        {
-
-        }
-    }
-
-    public static String read_txt(String filename)
-
-    {
-		File sdcard = Environment.getExternalStorageDirectory();
-		File file = new File(sdcard+"/uzgold", filename);
-		StringBuilder text = new StringBuilder();
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-
-			while ((line = br.readLine()) != null) {
-				text.append(line);
-				text.append('\n');
-			}
-			br.close();
-		}
-		catch (IOException e) {
-			
-		}
-
-		String output = text.toString().replaceAll("[^\\d.]","");
- 
-		return output;
-    }
 
 
 
@@ -444,15 +364,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 			if(!networkOn)
 			{
-
-				File extStore = Environment.getExternalStorageDirectory();
-				File myFile = new File(extStore.getAbsolutePath() + "/uzgold/db.txt");
-
-				if(myFile.exists())
-				{
-					fill_table_world_gold(toDouble(read_txt("gw.txt")));
-					fill_table_tashkent_gold(toInt(read_txt("gt.txt")));
-				}
 
 			}
 
@@ -601,15 +512,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			if(!networkOn)
 			{
 
-				File extStore = Environment.getExternalStorageDirectory();
-				File myFile = new File(extStore.getAbsolutePath() + "/uzgold/db.txt");
-
-				if(myFile.exists())
-				{
-					fill_table__world_currency(toDouble(read_txt("dg.txt")),toDouble(read_txt("eg.txt")),toDouble(read_txt("rg.txt")));
-					fill_table_tashkent_currency(toInt(read_txt("db.txt")));
-
-				}
 			}
 
 
@@ -772,17 +674,23 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
             if (result != null)
             {
-				if(result.substring(15,16).equals("P"))
+				if(result.substring(2, 3).equals("D"))
 				{
 					Double d = Double.valueOf((result.substring(result.indexOf("Based on current gold price:&nbsp;$")+35,
 																result.indexOf("Based on current gold price:&nbsp;$")+43)).replaceAll("[^\\d.]", ""));
 					fill_table_world_gold(d);
 				}
+				else if(result.substring(2,5).equals("res")) {
+                    fill_table_tashkent_gold(toInt(result.substring(result.indexOf("dollar_tashkent")+18, result.indexOf("dollar_tashkent")+21)));
+                }
+                else if(result.indexOf("ПРОДАЖА - ")>0) {
+                    fill_table_tashkent_currency(toInt(result.substring(result.indexOf("ПРОДАЖА - ") + 10, result.indexOf("ПРОДАЖА - ") + 14))-50);
+                }
 				else
 				{
-					Double usd = Double.valueOf(result.substring(result.indexOf("1 USD")+8,result.indexOf("USD")+12));
-					Double eur = Double.valueOf(result.substring(result.indexOf("1 EUR")+8,result.indexOf("EUR")+12));
-					Double rub = Double.valueOf(result.substring(result.indexOf("1 RUB")+8,result.indexOf("RUB")+10));
+					Double usd = Double.valueOf(result.substring(result.indexOf("U.S. Dollar") + 113,result.indexOf("U.S. Dollar") + 117));
+					Double eur = Double.valueOf(result.substring(result.indexOf("Euro") + 106,result.indexOf("Euro") + 110));
+					Double rub = Double.valueOf(result.substring(result.indexOf("Russian Ruble") + 118,result.indexOf("Russian Ruble") + 120));
 					
 					fill_table__world_currency(usd,eur,rub);
 
@@ -795,94 +703,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 
 
-	private static void downloadFile(String url, File outputFile) {
-		try {
-			URL u = new URL(url);
-			URLConnection conn = u.openConnection();
-			int contentLength = conn.getContentLength();
 
-			DataInputStream stream = new DataInputStream(u.openStream());
-
-			byte[] buffer = new byte[contentLength];
-			stream.readFully(buffer);
-			stream.close();
-
-			DataOutputStream fos = new DataOutputStream(new FileOutputStream(outputFile));
-			fos.write(buffer);
-			fos.flush();
-			fos.close();
-		} catch(FileNotFoundException e) {
-			return;
-		} catch (IOException e) {
-			return;
-		}
-	}
-	
-
-    public void readTextFile(final String link)
-    {
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                URL u = null;
-                try 
-				{
-                    u = new URL(link);
-                    HttpURLConnection c = (HttpURLConnection) u.openConnection();
-                    c.setRequestMethod("GET");
-                    c.connect();
-                    InputStream in = c.getInputStream();
-                    final ByteArrayOutputStream bo = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[1024];
-                    in.read(buffer);
-                    bo.write(buffer);
-					
-					
-                    runOnUiThread(new Runnable() 
-					{
-                        @Override
-                        public void run() 
-						{
-							String s = bo.toString();
-							String s1 = s.replaceAll( "[^\\d]", "");
-							
-							Integer i1 = Integer.valueOf(s1.substring(0,6));
-							Integer i2 = Integer.valueOf(s1.substring(6,10));
-							String status = s.substring(11,s.length());
-							String status2 = s.substring(11,12);
-							fill_table_tashkent_gold(i1);
-							fill_table_tashkent_currency(i2);
-
-
-							
-						
-                            try 
-							{
-                                bo.close();
-                            } 
-							catch (IOException e) 
-							{
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-                } 
-				catch (MalformedURLException e)
-				{
-                    e.printStackTrace();
-                } 
-				catch (IOException e)
-				{
-                    e.printStackTrace();
-                }
-
-            }
-        }.start();
-
-    }
 	
 }
 
