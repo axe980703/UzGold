@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Лом почём?</string>
     <string name="version">версия 1.0.7</string>
+    <string-array name="metal">
+        <item>Золото</item>
+        <item>Серебро</item>
+    </string-array>
+
 </resources>

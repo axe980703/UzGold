@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
@@ -16,56 +17,41 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:weightSum="1">
+
+
+            <Spinner
+                android:id="@+id/spinner_metal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/gold1"
                 android:layout_width="wrap_content"
-                android:text="Золото"
-                android:textSize="15dp"
-                android:typeface="serif"/>
-
-            <TextView
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:textSize="15.5dp"
                 android:layout_marginTop="32dp"
                 android:text="Gold(583)"
-                android:id="@+id/gold1"
-                android:textStyle="bold|italic"/>
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="18sp" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
-                android:text="Gold(750)"
-                android:layout_marginTop="15dp"
-                android:textSize="15.5dp"
                 android:id="@+id/gold2"
-                android:textStyle="bold|italic"/>
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
-                android:text="Gold(999)"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:textSize="15.5dp"
-                android:id="@+id/gold3"
-                android:textStyle="bold|italic"/>
+                android:text="Gold(750)"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="18sp" />
 
             <TextView
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/gold3"
                 android:layout_width="wrap_content"
-                android:text="Gold"
-                android:textSize="15.5dp"
-                android:textStyle="bold|italic"
-                android:textColor="#B3251C"
-                android:id="@+id/gold4"
-                android:layout_marginTop="15dp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Gold(999)"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -81,116 +67,47 @@
                 android:gravity="center"
                 android:layout_marginLeft="30dp">
 
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                <Spinner
+                    android:id="@+id/spinner_currency"
                     android:layout_width="wrap_content"
-                    android:text="Мировая"
-                    android:textSize="15dp"
-                    android:typeface="serif"/>
+                    android:layout_height="wrap_content" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:text="----------"
-                    android:layout_marginTop="33dp"
-                    android:textSize="16dp"
                     android:id="@+id/tv1"
-                    android:textIsSelectable="true" />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
-                    android:text="----------"
-                    android:layout_marginTop="15dp"
-                    android:textSize="16dp"
-                    android:id="@+id/tv3"
-                    android:textIsSelectable="true" />
-
-                <TextView
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:text="----------"
-                    android:layout_marginTop="15dp"
-                    android:textSize="16dp"
-                    android:id="@+id/tv5"
-                    android:textIsSelectable="true" />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:text="----------"
-                    android:textSize="16dp"
-                    android:layout_marginTop="13dp"
-                    android:id="@+id/tvg1"
-                    android:textIsSelectable="true" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginLeft="30dp">
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:text="Ташкент"
-                    android:textSize="15dp"
-                    android:typeface="serif"/>
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
-                    android:text="----------"
                     android:layout_marginTop="33dp"
-                    android:textSize="16dp"
-                    android:id="@+id/tv2"
-                    android:textIsSelectable="true" />
+                    android:text="----------"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textIsSelectable="true"
+                    android:textSize="19sp" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/tv3"
                     android:layout_width="wrap_content"
-                    android:text="----------"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:textSize="16dp"
-                    android:id="@+id/tv4"
-                    android:textIsSelectable="true" />
+                    android:text="----------"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textIsSelectable="true"
+                    android:textSize="19sp" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/tv5"
                     android:layout_width="wrap_content"
-                    android:text="----------"
-                    android:layout_marginTop="13dp"
-                    android:textSize="16dp"
-                    android:id="@+id/tv6"
-                    android:textIsSelectable="true" />
-
-                <TextView
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:layout_width="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:text="----------"
-                    android:textSize="16dp"
-                    android:layout_marginTop="13dp"
-                    android:id="@+id/tvg2"
-                    android:textIsSelectable="true" />
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textIsSelectable="true"
+                    android:textSize="19sp" />
 
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
 
     <LinearLayout
         android:orientation="horizontal"
