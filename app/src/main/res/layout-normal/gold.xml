@@ -6,182 +6,221 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center_horizontal">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:weightSum="1">
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/tv_metal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:text="МАРКА"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="16sp" />
 
             <Spinner
-                android:id="@+id/spinner_metal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/gold1"
+                android:id="@+id/spinner_currency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Gold(583)"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/gold2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Gold(750)"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/gold3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Gold(999)"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="18sp" />
-
+                android:layout_marginLeft="100dp"
+                android:clipChildren="false" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal">
+            android:layout_below="@+id/linearLayout"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginLeft="30dp">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:orientation="horizontal">
 
-                <Spinner
-                    android:id="@+id/spinner_currency"
+                <TextView
+                    android:id="@+id/gold1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="Gold(583)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="18sp" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar1"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentTop="false"
+                    android:layout_marginLeft="90dp"
+                    android:layout_marginTop="2dp" />
 
                 <TextView
                     android:id="@+id/tv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="33dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
                     android:text="----------"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textIsSelectable="true"
-                    android:textSize="19sp" />
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/gold2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gold(750)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="18sp" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar2"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentTop="false"
+                    android:layout_marginLeft="90dp"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:id="@+id/tv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:text="----------"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textIsSelectable="true"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/gold3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gold(999)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="18sp" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar3"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentTop="false"
+                    android:layout_marginLeft="90dp"
+                    android:layout_marginTop="2dp" />
 
                 <TextView
                     android:id="@+id/tv3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
                     android:text="----------"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textIsSelectable="true"
-                    android:textSize="19sp" />
-
-                <TextView
-                    android:id="@+id/tv5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="----------"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textIsSelectable="true"
-                    android:textSize="19sp" />
-
+                    android:textSize="18sp" />
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+
+    </RelativeLayout>
 
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="35dp">
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
             android:gravity="center"
-            android:layout_marginLeft="10dp">
+            android:orientation="vertical">
 
             <TextView
-                android:layout_height="wrap_content"
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Количество: (гр)"
                 android:textColor="#000000"
-                android:textSize="12dp"/>
+                android:textSize="14sp" />
 
             <EditText
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:ems="5"
-                android:textSize="13dp"
-                android:textColor="#000000"
-                android:maxLength="6"
-                android:inputType="numberDecimal"
                 android:id="@+id/enter"
-                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="5"
                 android:hint="1"
+                android:inputType="numberDecimal"
+                android:maxLength="7"
+                android:singleLine="true"
+                android:text="1"
+                android:textColor="#000000"
                 android:textColorHint="#CCCCCC"
-                android:text="1"/>
+                android:textSize="15sp" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="обновить"
-                android:layout_marginTop="10dp"
-                android:textColor="#0069EB"
-                android:textSize="12dp"
-                android:id="@+id/refresh_text" />
-
-            <ImageButton
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:src="@drawable/update3"
-                android:onClick="onUpdate"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_marginTop="100dp"
-        android:textSize="14dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:textColorHint="#C2C2C2"
-        android:id="@+id/checkupd"
-        android:text="@string/version" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:gravity="bottom|right"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onUpdate"
+            android:src="@drawable/update3" />
+
+        <TextView
+            android:id="@+id/refresh_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="обновить"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 </LinearLayout>
 

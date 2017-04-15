@@ -1,7 +1,8 @@
 package com.uzflsoft.uzgold;
 
 
-import static com.uzflsoft.uzgold.calc.*;
+import static com.uzflsoft.uzgold.Vars.*;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -10,15 +11,22 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-
+import android.widget.TextView;
 
 
 public class GoldSelected extends Fragment {
 
     View rootView;
+    Spinner spiner_location;
+    TextView gold1, gold2, gold3, tv1, tv2, tv3;
+    EditText enter;
+    Typeface fonter;
+    ArrayAdapter<?> spinnerAdapter;
+
 
 
     @Override
@@ -27,21 +35,59 @@ public class GoldSelected extends Fragment {
     {
         rootView = inflater.inflate(R.layout.gold, container, false);
 
-        final EditText enter = (EditText) rootView.findViewById(R.id.enter);
+
+        enter = (EditText) rootView.findViewById(R.id.enter);
         enter.setSelection(1);
 
-        final Spinner spiner_metall = (Spinner) rootView.findViewById(R.id.spinner_metal);
-        final Spinner spiner_currency = (Spinner) rootView.findViewById(R.id.spinner_currency);
 
-        ArrayAdapter<?> adapter_metal =
-                ArrayAdapter.createFromResource(getContext(), R.array.metal, R.layout.spinner_item);
-        adapter_metal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spiner_metall.setAdapter(adapter_metal);
+        spiner_location = (Spinner) rootView.findViewById(R.id.spinner_currency);
 
-        ArrayAdapter<?> adapter_currency =
-                ArrayAdapter.createFromResource(getContext(), R.array.metal, R.layout.spinner_item);
-        adapter_currency.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spiner_metall.setAdapter(adapter_currency);
+
+        gold1 = (TextView) rootView.findViewById(R.id.gold1);
+        gold2 = (TextView) rootView.findViewById(R.id.gold2);
+        gold3 = (TextView) rootView.findViewById(R.id.gold3);
+        tv1 = (TextView) rootView.findViewById(R.id.tv1);
+        tv2 = (TextView) rootView.findViewById(R.id.tv2);
+        tv3 = (TextView) rootView.findViewById(R.id.tv3);
+
+
+
+        spiner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent,
+                                       View itemSelected, int selectedItemPosition, long selectedId) {
+                switch (selectedItemPosition) {
+                    case 0:
+                        LOCATION_STATUS = "world";
+                        break;
+                    case 1:
+                        LOCATION_STATUS = "tashkent";
+                        break;
+                    case 2:
+                        LOCATION_STATUS = "russia";
+                        break;
+
+                }
+
+
+
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.location, R.layout.spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spiner_location.setAdapter(spinnerAdapter);
+
+        fonter = Typeface.createFromAsset(getContext().getAssets(), "fonts/Helvetica/HelveticaRegular.ttf");
+        gold1.setTypeface(fonter);
+        gold2.setTypeface(fonter);
+        gold3.setTypeface(fonter);
+        tv1.setTypeface(fonter);
+        tv2.setTypeface(fonter);
+        tv3.setTypeface(fonter);
+
+
 
 
         enter.addTextChangedListener(new TextWatcher()

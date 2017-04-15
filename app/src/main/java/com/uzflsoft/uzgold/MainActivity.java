@@ -1,6 +1,6 @@
 package com.uzflsoft.uzgold;
 
-import static com.uzflsoft.uzgold.calc.*;
+import static com.uzflsoft.uzgold.Calc.*;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;

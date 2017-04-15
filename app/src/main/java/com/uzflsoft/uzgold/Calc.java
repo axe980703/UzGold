@@ -2,7 +2,7 @@ package com.uzflsoft.uzgold;
 
 
 
-public class calc {
+public class Calc {
 
 
     public static double toGramm(double once)
