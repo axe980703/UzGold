@@ -4,7 +4,6 @@
     <string-array name="location">
         <item>МИРОВАЯ</item>
         <item>ТАШКЕНТ</item>
-        <item>РОССИЯ</item>
     </string-array>
 
 </resources>

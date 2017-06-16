@@ -8,4 +8,12 @@
         <item name="android:background">#3ca3ff</item>
         <item name="android:icon">@android:color/transparent</item>
     </style>
+
+    <style name="JTheme" parent="Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="colorPrimary">#87CAB3</item>
+        <item name="android:statusBarColor">#50AF91</item>
+        <item name="colorAccent">#00796B</item>
+
+    </style>
 </resources>

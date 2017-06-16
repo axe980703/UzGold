@@ -2,8 +2,11 @@ package com.uzflsoft.uzgold;
 
 
 import static com.uzflsoft.uzgold.Vars.*;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,8 +17,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 
 
 public class GoldSelected extends Fragment {
@@ -24,8 +30,12 @@ public class GoldSelected extends Fragment {
     Spinner spiner_location;
     TextView gold1, gold2, gold3, tv1, tv2, tv3;
     EditText enter;
+    RadioButton rb1, rb2;
+    RadioGroup radioGroup;
     Typeface fonter;
     ArrayAdapter<?> spinnerAdapter;
+    String PREFERENCE_RADIO = "radio_checked";
+    String PREFERENCE_SPINNER = "spinner_checked";
 
 
 
@@ -49,6 +59,9 @@ public class GoldSelected extends Fragment {
         tv1 = (TextView) rootView.findViewById(R.id.tv1);
         tv2 = (TextView) rootView.findViewById(R.id.tv2);
         tv3 = (TextView) rootView.findViewById(R.id.tv3);
+        rb1 = (RadioButton) rootView.findViewById(R.id.rb1);
+        rb2 = (RadioButton) rootView.findViewById(R.id.rb2);
+        radioGroup = (RadioGroup) rootView.findViewById(R.id.radioGroup);
 
 
 
@@ -58,17 +71,13 @@ public class GoldSelected extends Fragment {
                 switch (selectedItemPosition) {
                     case 0:
                         LOCATION_STATUS = "world";
+                        SavePreferences(PREFERENCE_SPINNER, "0");
                         break;
                     case 1:
                         LOCATION_STATUS = "tashkent";
+                        SavePreferences(PREFERENCE_SPINNER, "1");
                         break;
-                    case 2:
-                        LOCATION_STATUS = "russia";
-                        break;
-
                 }
-
-
 
             }
             public void onNothingSelected(AdapterView<?> parent) {
@@ -87,7 +96,16 @@ public class GoldSelected extends Fragment {
         tv2.setTypeface(fonter);
         tv3.setTypeface(fonter);
 
+        LoadPreferences(new String[] {PREFERENCE_RADIO, PREFERENCE_SPINNER});
 
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if(rb1.getId() == checkedId) CUR_SUM = true;
+                else CUR_SUM = false;
+                SavePreferences(PREFERENCE_RADIO, checkedId);
+            }
+        });
 
 
         enter.addTextChangedListener(new TextWatcher()
@@ -114,8 +132,38 @@ public class GoldSelected extends Fragment {
             }
         });
 
+
+
+
         return rootView;
     }
 
+
+
+    private void LoadPreferences(String kies[]) {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        int savedRadioIndex = sharedPreferences.getInt(kies[0], 0);
+        if(savedRadioIndex == rb1.getId())
+            rb1.setChecked(true);
+        if(savedRadioIndex == rb2.getId())
+            rb2.setChecked(true);
+
+        String savedSpinnerPosition = sharedPreferences.getString(kies[1], "0");
+        spiner_location.setSelection(Integer.valueOf(savedSpinnerPosition));
+
+    }
+
+    private void SavePreferences(String key, int value) {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+    private void SavePreferences(String key, String value) {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
 
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="MyTheme" parent="@android:style/Theme.Light">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="JTheme" parent="Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="colorPrimary">#87CAB3</item>
+        <item name="colorAccent">#00796B</item>
+
     </style>
 
-    <style name="MyActionBar" parent="@android:style/Widget.ActionBar">
-        <item name="android:background">#3ca3ff</item>
-        <item name="android:icon">@android:color/transparent</item>
-    </style>
 </resources>

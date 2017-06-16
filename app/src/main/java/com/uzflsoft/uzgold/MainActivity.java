@@ -1,44 +1,54 @@
 package com.uzflsoft.uzgold;
 
 import static com.uzflsoft.uzgold.Calc.*;
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import android.support.v7.app.ActionBar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
 
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener
+public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
 {
 
-    int PARSE_STATUS = 1;
     SQLiteHelper myDb;
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    static double gt583, gt750, gt999;
-    static double gw583, gw750, gw999;
-	static int db, rb, eb;
-	static int dollar, evro, rubble;
-	static double usd_eur = 1;
-    static double usd_rub = 1;
-    static View rootView;
-	static View rootView1;
-	static boolean networkOn = false;
+    double gt583, gt750, gt999;
+    double gw583, gw750, gw999;
+	int db, rb, eb;
+	double dollar, evro, rubble;
+	double usd_eur = 1;
+    double usd_rub = 1;
+    View rootView;
+	View rootView1;
+	boolean NETWORK_ON = false;
+    String requestUrl = "https://mute.000webhostapp.com/script.php";
 	
 	
 
@@ -48,72 +58,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         myDb = new SQLiteHelper(this);
         if(myDb.isTableEmpty())
             myDb.insertDataDefault();
 
+        tabsInitialize();
 
-        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
-
-        final ActionBar actionBar = getActionBar();
-
-        actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mAppSectionsPagerAdapter);
-
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
-		{
-            @Override
-            public void onPageSelected(int position)
-            {
-                actionBar.setSelectedNavigationItem(position);
-
-            }
-        });
-
-        for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++)
-        {
-
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mAppSectionsPagerAdapter.getPageTitle(i))
-                            .setIcon(mAppSectionsPagerAdapter.getPageIcon(i))
-                            .setTabListener(this));
-        }
-        
-		
-		if(isNetworkAvailable()) {
-            new ParseSite().execute("http://onlygold.com/m/Prices/AllTheGoldInTheWorld.asp" + toStri(PARSE_STATUS)); PARSE_STATUS ++;
-            new ParseSite().execute("http://cbu.uz/ru/arkhiv-kursov-valyut/xml" + toStri(PARSE_STATUS)); PARSE_STATUS ++;
-            new ParseSite().execute("https://mute.000webhostapp.com/get_data_json.php" + toStri(PARSE_STATUS));
-
-		}
-
-
-
-
-
-	}
-
-
-
-
-	public String readFromdLocalDB() {
-        Cursor curs =  myDb.getData();
-        StringBuffer buffer = new StringBuffer();
-        while(curs.moveToNext()) {
-            buffer.append("gold_course: " + curs.getString(0));
-            buffer.append("dollar_course: " + curs.getString(1));
-        }
-        return buffer.toString();
-	}
-
-
-    public void onUpdate(View view) {
-
+        courseRequest();
 
     }
 
@@ -136,6 +88,43 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
 
+	public String readFromdLocalDB() {
+        Cursor curs =  myDb.getData();
+        StringBuffer buffer = new StringBuffer();
+        while(curs.moveToNext()) {
+            buffer.append("gold_course: " + curs.getString(0));
+            buffer.append("dollar_course: " + curs.getString(1));
+        }
+        return buffer.toString();
+	}
+
+
+    public void onUpdate(View view) {
+        courseRequest();
+    }
+
+    String res;
+    public String courseRequest() {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, requestUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        res = response;
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+
+        Singelton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+        return res;
+    }
+
+
     public static class AppSectionsPagerAdapter extends FragmentPagerAdapter
     {
 
@@ -152,7 +141,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	
                 case 0: return new GoldSelected();
 
-                case 1  : return new MoneySelected();
+                case 1: return new MoneySelected();
             }
             return null;
         }
@@ -191,11 +180,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         TextView tv1 = (TextView) rootView.findViewById(R.id.tv1);
         TextView tv3 = (TextView) rootView.findViewById(R.id.tv3);
         TextView tv5 = (TextView) rootView.findViewById(R.id.tv5);
-        TextView tvg1 = (TextView) rootView.findViewById(R.id.tvg1);
-		TextView tvg2 = (TextView) rootView.findViewById(R.id.tvg2);
 
 		//add to database world_gold
-
 
         gw999 = toGramm(price);
         gw750 = gw999*750/999;
@@ -208,8 +194,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         tv1.setText(res1+" $");
         tv3.setText(res2+" $");
         tv5.setText(res3+" $");
-		tvg1.setText(toStrd(price)+" $");
-		tvg2.setText("за 1 унцию");
 		
     }
 
@@ -219,19 +203,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		TextView tv13 = (TextView) rootView1.findViewById(R.id.tv13);
 		TextView tv15 = (TextView) rootView1.findViewById(R.id.tv15);
 
-		dollar = (int) d;
-		evro = (int) e;
-		rubble = (int) r;
+		dollar = d;
+		evro =  e;
+		rubble = r;
 
-        dollar = toInt(String.valueOf(dollar).replaceAll("[^\\d.]",""));
-        evro = toInt(String.valueOf(evro).replaceAll("[^\\d.]",""));
-        rubble = toInt(String.valueOf(rubble).replaceAll("[^\\d.]",""));
+        ///////////// edited by me after changing parsing from cbu
 
-        myDb.updateData(toStrd(gw999), toStri(dollar));
+        myDb.updateData(toStrd(gw999), toStrd(dollar));
 
-		tv11.setText(toStrd(d).substring(0,toStrd(d).length()-2) + " сум");
-		tv13.setText(toStrd(e).substring(0,toStrd(e).length()-2) + " сум");
-		tv15.setText(toStrd(r).substring(0,toStrd(r).length()-2) + " сум");
+		tv11.setText(getInt(d));
+		tv13.setText(getInt(e));
+		tv15.setText(getInt(r));
 
 		usd_eur = e/d;
         usd_rub = r/d;
@@ -287,12 +269,48 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	}
 
 
+	public void tabsInitialize() {
+        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
+
+        final ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+
+            mViewPager = (ViewPager) findViewById(R.id.pager);
+            mViewPager.setAdapter(mAppSectionsPagerAdapter);
+
+            mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    actionBar.setSelectedNavigationItem(position);
+
+                }
+            });
+
+            for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
+
+                actionBar.addTab(
+                        actionBar.newTab()
+                                .setText(mAppSectionsPagerAdapter.getPageTitle(i))
+                                .setIcon(mAppSectionsPagerAdapter.getPageIcon(i))
+                                .setTabListener(this));
+            }
+        }
+    }
+
+
+
+
     public boolean isNetworkAvailable()
     {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		networkOn = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+		NETWORK_ON = activeNetworkInfo != null && activeNetworkInfo.isConnected();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -304,99 +322,23 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		return info;
 	}
 
-	public void errorToast() {
-        Toast.makeText(MainActivity.this, "Ошибка подключения! Перезапустите приложение", Toast.LENGTH_SHORT);
+	public void goText(String message) {
+        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public class Course {
+        String dollar_tashkent_course;
+        String euro_tashkent_course;
+        String ruble_tashkent_course;
+        String dollar_world_course;
+        String euro_world_course;
+        String ruble_world_course;
+        String gold_tashkent_course;
+        String gold_world_course;
     }
 
 
 
-    private class ParseSite extends AsyncTask<String, Void, String>
-    {
-        ProgressDialog dialog ;
-        Document doc = null;
-
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-
-           //dialog = ProgressDialog.show(MainActivity.this, null, "Обновление...");
-        }
-
-        @Override
-        protected String doInBackground(String... params)
-        {
-            try {
-                doc = Jsoup.connect(params[0].substring(0, params[0].length()-1)).get();
-                return params[0].substring(params[0].length()-1);
-            }
-            catch (Exception e) {
-
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result)
-        {
-            super.onPostExecute(result);
-
-            if(toInt(result) == 2)
-                new ParseSite().execute("https://dollar-uz.ru/" + toStri(4));
-
-            switch (toInt(result)) {
-                case 1: parseGoldWorld(doc); break;
-                case 2: parseCurrencyWorld(doc); break;
-                case 3: parseGoldTashkent(doc); break;
-                case 4: parseCurrencyTashkent(doc); break;
-            }
-
-
-            //dialog.dismiss();
-        }
-    }
-
-    public void parseGoldWorld(Document doc) {
-		try {
-			Element element = doc.getElementsByClass("spPrimaryDescription").first();
-			String s = element.text();
-			fill_table_world_gold(toDouble(s.substring(s.length() - 8, s.length()).replaceAll(",", "")));
-		}
-		catch (Exception e ) {
-			errorToast();
-		}
-    }
-    public void parseCurrencyWorld(Document doc) {
-		try {
-
-			Element d = doc.select("CcyNtry[ID=840]").first().select("Rate").first();
-			Element e = doc.select("CcyNtry[ID=978]").first().select("Rate").first();
-			Element r = doc.select("CcyNtry[ID=643]").first().select("Rate").first();
-			fill_table__world_currency(getInt(toDouble(d.text())), getInt(toDouble(e.text())), getInt(toDouble(r.text())));
-		}
-		catch (Exception e ) {
-			errorToast();
-		}
-    }
-	public void parseCurrencyTashkent(Document doc) {
-        try {
-            int d1 = toInt(doc.getElementsByClass("pokupka left_ram").first().text().replaceAll("[^\\d.]", "").trim());
-            int d2 = toInt(doc.getElementsByClass("prodaja left_ram").first().text().replaceAll("[^\\d.]", "").trim());
-            fill_table_tashkent_currency((d1 + d2) / 2);
-        }
-        catch (Exception e ) {
-            errorToast();
-        }
-	}
-    public void parseGoldTashkent(Document doc) {
-        try {
-            fill_table_tashkent_gold(1000 * toInt(doc.text().substring(doc.text().indexOf("gold_tashkent") + 16, doc.text().indexOf("gold_tashkent") + 19)));
-        }
-        catch (Exception e) {
-            errorToast();
-        }
-    }
 
 }
 
