@@ -11,10 +11,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "local_courses";
     public static final String TABLE_NAME = "courses";
-    public static final String column1 = "gold_tashkent_course";
-    public static final String column2 = "dollar_tashkent_course";
-    public static final String column3 = "gold_world_course";
-    public static final String column4 = "dollar_world_course";
+    public static final String column[] = {"dollar_tashkent_course", "euro_tashkent_course","ruble_tashkent_course",
+     "dollar_world_course","euro_world_course","ruble_world_course","gold_tashkent_course","gold_world_course"};
 
 
     public SQLiteHelper(Context context) {
@@ -24,8 +22,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (" + column1 + " INTEGER, " + column2 + " INTEGER," +
-                column3 + " INTEGER, " + column4 + " INTEGER)");
+        db.execSQL("create table " + TABLE_NAME + " (" + column[0] + " INTEGER, " + column[1] + " INTEGER," +
+                column[2] + " INTEGER, " + column[3] + " INTEGER," + column[4] + " INTEGER," + column[5] + " INTEGER," +
+                column[6] + " INTEGER," + column[7] + " INTEGER)");
     }
 
     @Override
@@ -34,13 +33,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void updateData(/*String gt, String dt,*/ String gw, String dw) {
+    public void updateData(String[] courses) {
         SQLiteDatabase db  = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(column1, gw);
-        cv.put(column2, dw);
-        cv.put(column3, "322");
-        cv.put(column4, "322");
+        for(int i = 0; i < courses.length; i++)
+            cv.put(column[i], courses[i]);
+
         db.update(TABLE_NAME, cv, null, null);
 
     }
@@ -73,10 +71,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public void insertDataDefault() {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(column1, "111");
-        cv.put(column2, "111");
-        cv.put(column3, "111");
-        cv.put(column4, "111");
+        for(int i = 0; i < 8; i++)
+            cv.put(column[i], 999);
         db.insert(TABLE_NAME, null, cv);
     }
 

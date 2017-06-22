@@ -1,6 +1,8 @@
 package com.uzflsoft.uzgold;
 
+
 import static com.uzflsoft.uzgold.Calc.*;
+import static com.uzflsoft.uzgold.Vars.*;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -17,20 +19,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.util.ArrayList;
+
 
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener
@@ -39,17 +31,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     SQLiteHelper myDb;
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-    double gt583, gt750, gt999;
-    double gw583, gw750, gw999;
 	int db, rb, eb;
 	double dollar, evro, rubble;
-	double usd_eur = 1;
-    double usd_rub = 1;
-    View rootView;
-	View rootView1;
 	boolean NETWORK_ON = false;
-    String requestUrl = "https://mute.000webhostapp.com/script.php";
-	
+    String requestUrl = "https://mute.000webhostapp.com/get_data.php";
+    GoldSelected goldActivity;
+
 	
 
     public void onCreate(Bundle savedInstanceState)
@@ -58,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        goldActivity = new GoldSelected();
 
         myDb = new SQLiteHelper(this);
         if(myDb.isTableEmpty())
@@ -65,7 +53,15 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
         tabsInitialize();
 
-        courseRequest();
+        CONNECTION_ON = isNetworkAvailable();
+
+        initVars(readDB());
+
+
+        if(isNetworkAvailable())
+            goRequest();
+
+
 
     }
 
@@ -88,40 +84,64 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
 
 
-	public String readFromdLocalDB() {
+	public int[] readDB() {
         Cursor curs =  myDb.getData();
-        StringBuffer buffer = new StringBuffer();
-        while(curs.moveToNext()) {
-            buffer.append("gold_course: " + curs.getString(0));
-            buffer.append("dollar_course: " + curs.getString(1));
-        }
-        return buffer.toString();
+        curs.moveToFirst();
+        int arr[] = new int[8];
+        for(int i = 0; i < arr.length; i++)
+            arr[i] = Integer.parseInt(curs.getString(i));
+        curs.close();
+        return arr;
 	}
 
-
     public void onUpdate(View view) {
-        courseRequest();
+        if(isNetworkAvailable()) {
+            goldActivity.showPBars(true);
+            goRequest();
+        }
     }
 
-    String res;
-    public String courseRequest() {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, requestUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        res = response;
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+     public void goRequest() {
+         StringRequest stringRequest = new StringRequest(Request.Method.POST, requestUrl,
+                 new Response.Listener<String>() {
+                     @Override
+                     public void onResponse(String response) {
 
-                    }
-                });
+                         String courses[] = response.split(" ");
+                         myDb.updateData(courses);
+                         goldActivity.fadeAnimTv();
+                         initVars(readDB());
+                         goldActivity.fill_table_gold();
+                         goldActivity.showPBars(false);
 
-        Singelton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
-        return res;
+
+                     }
+                 },
+                 new Response.ErrorListener() {
+                     @Override
+                     public void onErrorResponse(VolleyError error) {
+
+                     }
+                 });
+
+         Singelton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+     }
+
+
+    public void initVars(int arr[]) {
+        dTash = arr[0];
+        eTash = arr[1];
+        rTash = arr[2];
+        dWorld = arr[3];
+        eWorld = arr[4];
+        rWorld = arr[5];
+        gt583 = arr[6]*1000;
+        gt750 = gt583*750/583;
+        gt999 = gt583*999/583;
+        gw999 = toGramm(arr[7]);
+        gw750 = gw999*750/999;
+        gw583 = gw999*583/999;
     }
 
 
@@ -174,29 +194,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
 
 
-    public void fill_table_world_gold(double price)
-    {
-		
-        TextView tv1 = (TextView) rootView.findViewById(R.id.tv1);
-        TextView tv3 = (TextView) rootView.findViewById(R.id.tv3);
-        TextView tv5 = (TextView) rootView.findViewById(R.id.tv5);
-
-		//add to database world_gold
-
-        gw999 = toGramm(price);
-        gw750 = gw999*750/999;
-        gw583 = gw999*583/999;
-
-		String res1 = toStrd(round(gw583,2));
-		String res2 = toStrd(round(gw750,2));
-		String res3 = toStrd(round(gw999,2));
-		
-        tv1.setText(res1+" $");
-        tv3.setText(res2+" $");
-        tv5.setText(res3+" $");
-		
-    }
-
 	public void fill_table__world_currency(double d, double e, double r)
 	{
 		TextView tv11 = (TextView) rootView1.findViewById(R.id.tv11);
@@ -207,43 +204,12 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 		evro =  e;
 		rubble = r;
 
-        ///////////// edited by me after changing parsing from cbu
-
-        myDb.updateData(toStrd(gw999), toStrd(dollar));
-
 		tv11.setText(getInt(d));
 		tv13.setText(getInt(e));
 		tv15.setText(getInt(r));
 
-		usd_eur = e/d;
-        usd_rub = r/d;
-
 	}
-	
-	public void fill_table_tashkent_gold(int gold)
-	{
-		
-		TextView tv2 = (TextView) rootView.findViewById(R.id.tv2);
-		TextView tv4 = (TextView) rootView.findViewById(R.id.tv4);
-		TextView tv6 = (TextView) rootView.findViewById(R.id.tv6);
 
-		//add to database tash_gold
-
-		gt583 = gold;
-		gt750 = (int) gt583*750/583;
-		gt999 = (int) gt583*999/583;
-		
-		String res1 = toStrd(gt583);
-		String res2 = toStrd(gt750);
-		String res3 = toStrd(gt999);
-		
-		
-		tv2.setText(res1.substring(0,res1.length()).substring(0,3) + "," + res1.substring(0,res1.length()).substring(3,6) + " сум") ;
-		tv4.setText(res2.substring(0,res2.length()).substring(0,3) + "," + res2.substring(0,res2.length()).substring(3,6) + " сум") ;
-		tv6.setText(res3.substring(0,res3.length()).substring(0,3) + "," + res3.substring(0,res3.length()).substring(3,6) + " сум") ;
-		
-		
-	}
 	
 	public void fill_table_tashkent_currency(int d)
 	{
@@ -251,11 +217,9 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         TextView tv14 = (TextView) rootView1.findViewById(R.id.tv14);
         TextView tv16 = (TextView) rootView1.findViewById(R.id.tv16);
 
-		//add to database tash_cur
-
 		db = d;
-		eb = (int) (db*usd_eur);
-		rb = (int) (db*usd_rub);
+		eb = d;
+		rb = d;
 		
 		String res4 = toStri(db);
 		String res5 = toStri(eb);
@@ -325,18 +289,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 	public void goText(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
-
-    public class Course {
-        String dollar_tashkent_course;
-        String euro_tashkent_course;
-        String ruble_tashkent_course;
-        String dollar_world_course;
-        String euro_world_course;
-        String ruble_world_course;
-        String gold_tashkent_course;
-        String gold_world_course;
-    }
-
 
 
 

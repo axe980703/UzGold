@@ -1,6 +1,6 @@
 package com.uzflsoft.uzgold;
 
-
+import static com.uzflsoft.uzgold.Vars.rootView1;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -13,10 +13,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 
+
+
 public class MoneySelected extends Fragment
 {
 
-    View rootView;
     Spinner spiner_metall, spiner_currency;
     EditText enter;
 
@@ -25,8 +26,8 @@ public class MoneySelected extends Fragment
                              Bundle savedInstanceState)
     {
 
-        rootView = inflater.inflate(R.layout.money, container, false);
-        enter = (EditText) rootView.findViewById(R.id.enter1);
+        rootView1 = inflater.inflate(R.layout.money, container, false);
+        enter = (EditText) rootView1.findViewById(R.id.enter1);
         enter.setSelection(1);
 
 
@@ -55,6 +56,6 @@ public class MoneySelected extends Fragment
 
         });
 
-        return rootView;
+        return rootView1;
     }
 }

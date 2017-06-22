@@ -16,11 +16,16 @@ public class Calc {
 
     public static double toDouble(String s){return Double.valueOf(s);}
 
+    public static double toDoublel(long l){return Double.valueOf(l);}
+
     public static String toStrl(long l){return String.valueOf(l);}
 
     public static int toInt(String s){return Integer.valueOf(s);}
 
     public static int getInt(double d) {return Double.valueOf(d).intValue();}
+
+
+
 
 
 
