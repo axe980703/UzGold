@@ -1,211 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="vertical"
-	android:gravity="top|center">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/headLayoutMoney"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@android:color/white"
+	android:clickable="false"
+	android:orientation="vertical">
 
-	<LinearLayout
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:orientation="horizontal"
-		android:layout_marginTop="20dp">
 
-		<LinearLayout
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:orientation="vertical"
-			android:gravity="center">
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="Валюта"
-				android:textSize="15dp"
-				android:typeface="serif"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:textSize="15.5dp"
-				android:layout_marginTop="30dp"
-				android:text="Доллар"
-				android:textStyle="bold"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="Евро"
-				android:layout_marginTop="16dp"
-				android:textSize="15.5dp"
-				android:textStyle="bold"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="Рубль"
-				android:layout_marginTop="16dp"
-				android:textSize="15.5dp"
-				android:textStyle="bold"/>
-
-		</LinearLayout>
-
-		<LinearLayout
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:orientation="vertical"
-			android:layout_marginLeft="30dp"
-			android:gravity="center">
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="Гос-курс"
-				android:textSize="15dp"
-				android:typeface="serif"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="----------"
-				android:layout_marginTop="33dp"
-				android:textSize="16dp"
-				android:id="@+id/tv11"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="----------"
-				android:layout_marginTop="15dp"
-				android:textSize="16dp"
-				android:id="@+id/tv13"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="----------"
-				android:layout_marginTop="15dp"
-				android:textSize="16dp"
-				android:id="@+id/tv15"/>
-
-		</LinearLayout>
-
-		<LinearLayout
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:orientation="vertical"
-			android:layout_marginLeft="30dp"
-			android:gravity="center">
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="Рынок"
-				android:textSize="15dp"
-				android:typeface="serif"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="----------"
-				android:layout_marginTop="33dp"
-				android:textSize="16dp"
-				android:id="@+id/tv12"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="----------"
-				android:layout_marginTop="15dp"
-				android:textSize="16dp"
-				android:id="@+id/tv14"/>
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:layout_width="wrap_content"
-				android:text="----------"
-				android:layout_marginTop="15dp"
-				android:textSize="16dp"
-				android:id="@+id/tv16"/>
-
-		</LinearLayout>
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:orientation="horizontal"
+	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:background="@android:color/white"
+		android:clickable="false"
+		android:gravity="center">
+
+
+		<LinearLayout
+			android:id="@+id/linearLayout2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dp"
+			android:background="@android:color/white"
+			android:clickable="false"
+			android:orientation="vertical">
+
+			<RelativeLayout
+				android:id="@+id/CurRelativeLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@android:color/white"
+				android:clickable="false">
+
+				<TextView
+					android:id="@+id/tv_cur"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentLeft="true"
+
+					android:layout_centerVertical="true"
+					android:layout_marginLeft="30dp"
+					android:clickable="false"
+					android:text="ВАЛЮТА"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textSize="16sp" />
+
+				<Spinner
+					android:id="@+id/spinner_currency"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentRight="true"
+					android:layout_marginRight="30dp"
+					android:clickable="false" />
+			</RelativeLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="25dp"
+				android:layout_marginTop="15dp"
+				android:background="@android:color/white"
+				android:clickable="false"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/cur1"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:clickable="false"
+					android:gravity="center"
+					android:minEms="3"
+					android:text="Доллар"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textSize="18sp" />
+
+				<ProgressBar
+					android:id="@+id/pb1"
+					style="?android:attr/progressBarStyle"
+					android:layout_width="20dp"
+					android:layout_height="20dp"
+					android:layout_alignParentTop="false"
+					android:layout_marginLeft="50dp"
+					android:clickable="false"
+					android:indeterminate="true"
+					android:indeterminateTint="@color/progressBar"
+					android:indeterminateTintMode="src_atop" />
+
+				<TextView
+					android:id="@+id/tv1"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dp"
+					android:layout_marginRight="20dp"
+					android:clickable="false"
+					android:gravity="center"
+					android:minEms="5"
+					android:text="----------"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textIsSelectable="true"
+					android:textSize="17.5sp" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="25dp"
+				android:layout_marginTop="25dp"
+				android:background="@android:color/white"
+				android:clickable="false"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/cur2"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:clickable="false"
+					android:gravity="center"
+					android:minEms="3"
+					android:text="Евро"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textSize="18sp" />
+
+				<ProgressBar
+					android:id="@+id/pb2"
+					style="?android:attr/progressBarStyle"
+					android:layout_width="20dp"
+					android:layout_height="20dp"
+					android:layout_alignParentTop="false"
+					android:layout_marginLeft="50dp"
+					android:clickable="false"
+					android:indeterminate="true"
+					android:indeterminateTint="@color/progressBar"
+					android:indeterminateTintMode="src_atop" />
+
+				<TextView
+					android:id="@+id/tv2"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dp"
+					android:layout_marginRight="20dp"
+					android:clickable="false"
+					android:gravity="center"
+					android:minEms="5"
+					android:text="----------"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textIsSelectable="true"
+					android:textSize="17.5sp" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="25dp"
+				android:layout_marginTop="25dp"
+				android:background="@android:color/white"
+				android:clickable="false"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/cur3"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:clickable="false"
+					android:gravity="center"
+					android:minEms="3"
+					android:text="Рубль"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textSize="18sp" />
+
+				<ProgressBar
+					android:id="@+id/pb3"
+					style="?android:attr/progressBarStyle"
+					android:layout_width="20dp"
+					android:layout_height="20dp"
+					android:layout_alignParentTop="false"
+					android:layout_marginLeft="50dp"
+					android:clickable="false"
+					android:indeterminate="true"
+					android:indeterminateTint="@color/progressBar"
+					android:indeterminateTintMode="src_atop" />
+
+				<TextView
+					android:id="@+id/tv3"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="10dp"
+					android:layout_marginRight="20dp"
+					android:clickable="false"
+					android:gravity="center"
+					android:minEms="5"
+					android:text="----------"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:textIsSelectable="true"
+					android:textSize="17.5sp" />
+			</LinearLayout>
+
+		</LinearLayout>
+
+
+	</RelativeLayout>
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="60dp"
+		android:background="@android:color/white"
+		android:clickable="false"
 		android:gravity="center"
-		android:layout_marginTop="69dp">
+		tools:context=".MainActivity">
 
-		<LinearLayout
-			android:layout_height="wrap_content"
+
+		<EditText
+			android:id="@+id/cur_enter"
 			android:layout_width="wrap_content"
-			android:orientation="vertical"
-			android:gravity="center"
-			android:layout_marginLeft="10dp">
-
-			<TextView
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:text="Сумма:($,€,Р)"
-				android:textColor="#000000"
-				android:textSize="12dp"/>
-
-			<EditText
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:ems="5"
-				android:textSize="13dp"
-				android:textColor="#000000"
-				android:maxLength="6"
-				android:inputType="numberDecimal"
-				android:id="@+id/enter1"
-				android:singleLine="true"
-				android:hint="1"
-				android:textColorHint="#CCCCCC"
-				android:text="1"/>
-
-		</LinearLayout>
-
-		<LinearLayout
 			android:layout_height="wrap_content"
+			android:clickable="false"
+			android:ems="5"
+			android:hint="1"
+			android:inputType="numberDecimal"
+			android:maxLength="7"
+			android:singleLine="true"
+			android:text="1"
+			android:textColor="#000000"
+			android:textColorHint="#CCCCCC"
+			android:textSize="15sp" />
+
+		<TextView
+			android:id="@+id/textView"
 			android:layout_width="wrap_content"
-			android:orientation="horizontal"
-			android:layout_marginLeft="100dp"
-			android:layout_marginTop="5dp">
+			android:layout_height="wrap_content"
+			android:clickable="false"
+			android:text="$ / € / ₽"
+			android:textColor="@android:color/black"
+			android:textSize="15sp" />
 
-			<TextView
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:text="обновить"
-				android:layout_marginTop="10dp"
-				android:textColor="#0069EB"
-				android:textSize="12dp"/>
-
-			<ImageButton
-				android:layout_height="wrap_content"
-				android:layout_width="wrap_content"
-				android:src="@drawable/update3"
-				android:onClick="onUpdate"/>
-
-		</LinearLayout>
 
 	</LinearLayout>
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:background="@android:color/white"
+		android:clickable="false"
+		android:gravity="bottom|end"
+		android:orientation="vertical">
+
+		<android.support.design.widget.FloatingActionButton
+			android:id="@+id/fab"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="25dp"
+			android:layout_marginRight="15dp"
+			android:layout_weight="0"
+			android:clickable="true"
+			android:onClick="onUpdate"
+			android:soundEffectsEnabled="true"
+			android:src="@drawable/reload"
+			app:elevation="6dp"
+			app:pressedTranslationZ="12dp" />
+
+	</LinearLayout>
+
 
 </LinearLayout>
 

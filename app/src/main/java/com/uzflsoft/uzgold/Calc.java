@@ -24,7 +24,19 @@ public class Calc {
 
     public static int getInt(double d) {return Double.valueOf(d).intValue();}
 
-
+    public static String getCurrencyVal(String s) {
+        switch (s) {
+            case "Доллар":
+                return "DOL";
+            case "Евро":
+                return "EUR";
+            case "Рубль":
+                return "RUB";
+            case "Сум":
+                return "SUM";
+        }
+        return null;
+    }
 
 
 

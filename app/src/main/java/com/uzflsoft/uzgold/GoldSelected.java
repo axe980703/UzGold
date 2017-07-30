@@ -39,6 +39,7 @@ public class GoldSelected extends Fragment {
     ArrayAdapter<?> spinnerAdapter;
     String PREFERENCE_RADIO = "radio_checked";
     String PREFERENCE_SPINNER = "spinner_checked";
+    String NUM_VALUE = "num_gold";
     Vars vars;
 
 
@@ -50,21 +51,19 @@ public class GoldSelected extends Fragment {
         rootView = inflater.inflate(R.layout.gold, container, false);
 
 
-        enter = (EditText) rootView.findViewById(R.id.enter);
+        enter = (EditText) rootView.findViewById(R.id.gold_enter);
         enter.setSelection(1);
 
-        spiner_location = (Spinner) rootView.findViewById(R.id.spinner_currency);
-
-
+        spiner_location = (Spinner) rootView.findViewById(R.id.spinner_currency_location);
         gold1 = (TextView) rootView.findViewById(R.id.gold1);
         gold2 = (TextView) rootView.findViewById(R.id.gold2);
         gold3 = (TextView) rootView.findViewById(R.id.gold3);
-        tv1 = (TextView) rootView.findViewById(R.id.tv1);
-        tv2 = (TextView) rootView.findViewById(R.id.tv2);
-        tv3 = (TextView) rootView.findViewById(R.id.tv3);
-        rb1 = (RadioButton) rootView.findViewById(R.id.rb1);
-        rb2 = (RadioButton) rootView.findViewById(R.id.rb2);
-        radioGroup = (RadioGroup) rootView.findViewById(R.id.radioGroup);
+        tv1 = (TextView) rootView.findViewById(R.id.tvgold1);
+        tv2 = (TextView) rootView.findViewById(R.id.tvgold2);
+        tv3 = (TextView) rootView.findViewById(R.id.tvgold3);
+        rb1 = (RadioButton) rootView.findViewById(R.id.rbgold1);
+        rb2 = (RadioButton) rootView.findViewById(R.id.rbgold2);
+        radioGroup = (RadioGroup) rootView.findViewById(R.id.gold_radioGroup);
 
         if(!CONNECTION_ON)
             showPBars(false);
@@ -76,13 +75,14 @@ public class GoldSelected extends Fragment {
                 switch (selectedItemPosition) {
                     case 0:
                         LOCATION_STATUS = "world";
-                        SavePreferences(PREFERENCE_SPINNER, "0");
+                        SavePreferences(PREFERENCE_SPINNER, 0);
                         fill_table_gold();
 
                         break;
+
                     case 1:
                         LOCATION_STATUS = "tashkent";
-                        SavePreferences(PREFERENCE_SPINNER, "1");
+                        SavePreferences(PREFERENCE_SPINNER, 1);
                         fill_table_gold();
 
                         break;
@@ -105,7 +105,6 @@ public class GoldSelected extends Fragment {
         tv2.setTypeface(fonter);
         tv3.setTypeface(fonter);
 
-        LoadPreferences(new String[] {PREFERENCE_RADIO, PREFERENCE_SPINNER});
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -140,6 +139,7 @@ public class GoldSelected extends Fragment {
                     enter.setGravity(Gravity.LEFT);
                 else
                     enter.setGravity(Gravity.CENTER);
+
                 if(!enter.getText().toString().equals("") && Double.valueOf(enter.getText().toString()) != 0) {
                     NUM = Double.valueOf(enter.getText().toString());
                     fill_table_gold();
@@ -148,6 +148,7 @@ public class GoldSelected extends Fragment {
                     NUM = 1;
                     fill_table_gold();
                 }
+                SavePreferences(NUM_VALUE, (float) NUM);
 
 
             }
@@ -158,6 +159,8 @@ public class GoldSelected extends Fragment {
 
             }
         });
+
+        LoadPreferences(new String[] {PREFERENCE_RADIO, PREFERENCE_SPINNER, NUM_VALUE});
 
         fill_table_gold();
 
@@ -174,9 +177,9 @@ public class GoldSelected extends Fragment {
     }
 
     public void showPBars(boolean status) {
-        pb1 = (ProgressBar) rootView.findViewById(R.id.pb1);
-        pb2 = (ProgressBar) rootView.findViewById(R.id.pb2);
-        pb3 = (ProgressBar) rootView.findViewById(R.id.pb3);
+        pb1 = (ProgressBar) rootView.findViewById(R.id.pbgold1);
+        pb2 = (ProgressBar) rootView.findViewById(R.id.pbgold2);
+        pb3 = (ProgressBar) rootView.findViewById(R.id.pbgold3);
         int stat;
         if(status) stat = View.VISIBLE;
         else stat = View.INVISIBLE;
@@ -186,9 +189,9 @@ public class GoldSelected extends Fragment {
     }
 
     public void fadeAnimTv() {
-        tv1 = (TextView) rootView.findViewById(R.id.tv1);
-        tv2 = (TextView) rootView.findViewById(R.id.tv2);
-        tv3 = (TextView) rootView.findViewById(R.id.tv3);
+        tv1 = (TextView) rootView.findViewById(R.id.tvgold1);
+        tv2 = (TextView) rootView.findViewById(R.id.tvgold2);
+        tv3 = (TextView) rootView.findViewById(R.id.tvgold3);
         AlphaAnimation fadeIn = new AlphaAnimation(0.0f , 1.0f ) ;
         tv1.startAnimation(fadeIn);
         tv2.startAnimation(fadeIn);
@@ -204,22 +207,30 @@ public class GoldSelected extends Fragment {
         double g750 = vars.getCurGoldVars(1);
         double g999 = vars.getCurGoldVars(2);
 
-        TextView tv1 = (TextView) rootView.findViewById(R.id.tv1);
-        TextView tv2 = (TextView) rootView.findViewById(R.id.tv2);
-        TextView tv3 = (TextView) rootView.findViewById(R.id.tv3);
+        TextView tv1 = (TextView) rootView.findViewById(R.id.tvgold1);
+        TextView tv2 = (TextView) rootView.findViewById(R.id.tvgold2);
+        TextView tv3 = (TextView) rootView.findViewById(R.id.tvgold3);
 
         if(!CUR_SUM) {
             g583 = round(g583*NUM,2);
             g750 = round(g750*NUM,2);
             g999 = round(g999*NUM,2);
 
-            if(g583 > 1000) g583 = getInt(g583);
-            if(g750 > 1000) g750 = getInt(g750);
-            if(g999 > 1000) g999 = getInt(g999);
+            if(g583 > 1000)
+                tv1.setText(String.format("%,d", getInt(g583)) + CUR_PREFIX);
+            else
+                tv1.setText(String.format("%1$,.2f", g583) + CUR_PREFIX);
+            if(g750 > 1000)
+                tv2.setText(String.format("%,d", getInt(g750)) + CUR_PREFIX);
+            else
+                tv2.setText(String.format("%1$,.2f", g750) + CUR_PREFIX);
+            if(g999 > 1000)
+                tv3.setText(String.format("%,d", getInt(g999)) + CUR_PREFIX);
+            else
+                tv3.setText(String.format("%1$,.2f", g999) + CUR_PREFIX);
 
-            tv1.setText(String.format("%1$,.2f", g583) + CUR_PREFIX);
-            tv2.setText(String.format("%1$,.2f", g750) + CUR_PREFIX);
-            tv3.setText(String.format("%1$,.2f", g999) + CUR_PREFIX);
+
+
         }
         else {
             long gg583 = (long) (g583*NUM);
@@ -250,13 +261,18 @@ public class GoldSelected extends Fragment {
             CUR_PREFIX = " $";
         }
 
-        String savedSpinnerPosition = sharedPreferences.getString(kies[1], "0");
-        int pos = Integer.valueOf(savedSpinnerPosition);
+        int pos = sharedPreferences.getInt(kies[1], 0);
         spiner_location.setSelection(pos);
 
         if(pos == 0) LOCATION_STATUS = "world";
         else  LOCATION_STATUS = "tashkent";
 
+        NUM = sharedPreferences.getFloat(kies[2], 0.0f);
+        if(NUM == 0) NUM = 1;
+        if (NUM == (int) NUM)
+            enter.setText(toStri((int) (NUM)));
+        else
+            enter.setText(toStrd(NUM));
 
     }
 
@@ -264,6 +280,13 @@ public class GoldSelected extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, value);
+        editor.apply();
+    }
+
+    private void SavePreferences(String key, float value) {
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat(key, value);
         editor.apply();
     }
 
@@ -275,4 +298,9 @@ public class GoldSelected extends Fragment {
     }
 
 
+
+
 }
+
+
+

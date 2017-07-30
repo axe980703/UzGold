@@ -13,8 +13,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,11 +29,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     SQLiteHelper myDb;
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
-	int db, rb, eb;
-	double dollar, evro, rubble;
 	boolean NETWORK_ON = false;
     String requestUrl = "https://mute.000webhostapp.com/get_data.php";
     GoldSelected goldActivity;
+    MoneySelected moneyActivity;
 
 	
 
@@ -46,10 +43,13 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         setContentView(R.layout.activity_main);
 
         goldActivity = new GoldSelected();
+        moneyActivity = new MoneySelected();
 
         myDb = new SQLiteHelper(this);
-        if(myDb.isTableEmpty())
-            myDb.insertDataDefault();
+        if(myDb.isTableEmpty("courses")) {
+            myDb.insertDataDefault("courses");
+
+        }
 
         tabsInitialize();
 
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 
 
 	public int[] readDB() {
-        Cursor curs =  myDb.getData();
+        Cursor curs =  myDb.getData("courses");
         curs.moveToFirst();
         int arr[] = new int[8];
         for(int i = 0; i < arr.length; i++)
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public void onUpdate(View view) {
         if(isNetworkAvailable()) {
             goldActivity.showPBars(true);
+            moneyActivity.showPBars(true);
             goRequest();
         }
     }
@@ -109,11 +110,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                      public void onResponse(String response) {
 
                          String courses[] = response.split(" ");
-                         myDb.updateData(courses);
+                         myDb.updateDataCourses(courses);
                          goldActivity.fadeAnimTv();
+                         moneyActivity.fadeAnimTv();
                          initVars(readDB());
                          goldActivity.fill_table_gold();
+                         moneyActivity.fill_table_curr();
                          goldActivity.showPBars(false);
+                         moneyActivity.showPBars(false);
 
 
                      }
@@ -193,46 +197,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     }
 
 
-
-	public void fill_table__world_currency(double d, double e, double r)
-	{
-		TextView tv11 = (TextView) rootView1.findViewById(R.id.tv11);
-		TextView tv13 = (TextView) rootView1.findViewById(R.id.tv13);
-		TextView tv15 = (TextView) rootView1.findViewById(R.id.tv15);
-
-		dollar = d;
-		evro =  e;
-		rubble = r;
-
-		tv11.setText(getInt(d));
-		tv13.setText(getInt(e));
-		tv15.setText(getInt(r));
-
-	}
-
-	
-	public void fill_table_tashkent_currency(int d)
-	{
-		TextView tv12 = (TextView) rootView1.findViewById(R.id.tv12);
-        TextView tv14 = (TextView) rootView1.findViewById(R.id.tv14);
-        TextView tv16 = (TextView) rootView1.findViewById(R.id.tv16);
-
-		db = d;
-		eb = d;
-		rb = d;
-		
-		String res4 = toStri(db);
-		String res5 = toStri(eb);
-		String res6 = toStri(rb);
-		
-
-		tv12.setText(res4 + " сум");
-		tv14.setText(res5 + " сум");
-		tv16.setText(res6 + " сум");
-		
-	}
-
-
 	public void tabsInitialize() {
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
@@ -285,11 +249,6 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
 				android.os.Build.PRODUCT ); // то же что и device только на конце версия прошивки
 		return info;
 	}
-
-	public void goText(String message) {
-        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-    }
-
 
 
 }

@@ -25,27 +25,28 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_NAME + " (" + column[0] + " INTEGER, " + column[1] + " INTEGER," +
                 column[2] + " INTEGER, " + column[3] + " INTEGER," + column[4] + " INTEGER," + column[5] + " INTEGER," +
                 column[6] + " INTEGER," + column[7] + " INTEGER)");
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS" + TABLE_NAME);
+
         onCreate(db);
     }
 
-    public void updateData(String[] courses) {
+    public void updateDataCourses(String[] courses) {
         SQLiteDatabase db  = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         for(int i = 0; i < courses.length; i++)
             cv.put(column[i], courses[i]);
 
         db.update(TABLE_NAME, cv, null, null);
-
     }
 
-    public Cursor getData() {
+    public Cursor getData(String table_name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
+        Cursor res = db.rawQuery("select * from " + table_name, null);
         return  res;
     }
 /*
@@ -54,10 +55,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("delete from "+ TABLE_NAME);
     }
 */
-    public boolean isTableEmpty(){
+    public boolean isTableEmpty(String table_name){
         SQLiteDatabase db = this.getWritableDatabase();
         boolean hasTables = true;
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + table_name, null);
 
         if(cursor != null && cursor.getCount() > 0){
             hasTables=false;
@@ -68,12 +69,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
 
-    public void insertDataDefault() {
+    public void insertDataDefault(String table_name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         for(int i = 0; i < 8; i++)
             cv.put(column[i], 999);
-        db.insert(TABLE_NAME, null, cv);
+        db.insert(table_name, null, cv);
     }
 
 }
