@@ -174,10 +174,6 @@ public class MoneySelected extends Fragment
         pb3.setVisibility(stat);
     }
 
-
-
-
-
     private void LoadPreferences(String kies[]) {
         SharedPreferences sp = getActivity().getPreferences(Context.MODE_PRIVATE);
         int pos = sp.getInt(kies[0], 0);

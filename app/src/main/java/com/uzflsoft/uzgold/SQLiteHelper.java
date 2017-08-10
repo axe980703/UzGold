@@ -12,7 +12,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "local_courses";
     public static final String TABLE_NAME = "courses";
     public static final String column[] = {"dollar_tashkent_course", "euro_tashkent_course","ruble_tashkent_course",
-     "dollar_world_course","euro_world_course","ruble_world_course","gold_tashkent_course","gold_world_course"};
+     "dollar_world_course","euro_world_course","ruble_world_course","gold_tashkent_course","gold_world_course","gold_tashkent_clean_course"};
 
 
     public SQLiteHelper(Context context) {
@@ -24,7 +24,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + TABLE_NAME + " (" + column[0] + " INTEGER, " + column[1] + " INTEGER," +
                 column[2] + " INTEGER, " + column[3] + " INTEGER," + column[4] + " INTEGER," + column[5] + " INTEGER," +
-                column[6] + " INTEGER," + column[7] + " INTEGER)");
+                column[6] + " INTEGER," + column[7] + " INTEGER," + column[8] + " INTEGER)");
 
     }
 
@@ -72,7 +72,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public void insertDataDefault(String table_name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        for(int i = 0; i < 8; i++)
+        for(int i = 0; i < column.length; i++)
             cv.put(column[i], 999);
         db.insert(table_name, null, cv);
     }
